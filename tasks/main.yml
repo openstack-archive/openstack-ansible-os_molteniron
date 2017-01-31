@@ -25,15 +25,6 @@
   tags:
     - always
 
-- include: molteniron_pre_install.yml
-  tags:
-    - molteniron-install
-
 - include: molteniron_install.yml
   tags:
     - molteniron-install
-
-- include: molteniron_post_install.yml
-  tags:
-    - molteniron-install
-    - molteniron-config
