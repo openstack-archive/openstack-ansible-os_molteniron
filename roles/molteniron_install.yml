@@ -63,7 +63,6 @@
     - not molteniron_developer_mode | bool
     - molteniron_get_venv | changed or molteniron_venv_dir | changed
   notify:
-    - Restart Keystone APIs
     - Restart service
 
 - name: Install pip packages
@@ -82,7 +81,6 @@
   delay: 2
   when: molteniron_developer_mode | bool
   notify:
-    - Restart Keystone APIs
     - Restart service
 
 - name: Update virtualenv path
