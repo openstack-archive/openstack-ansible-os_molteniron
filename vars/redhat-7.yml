@@ -13,9 +13,9 @@
 # limitations under the License.
 
 molteniron_distro_packages:
-  - pbr
-  - daemonize
-  - PyMySQL
-  - pyyaml
-  - sqlalchemy
-  - sqlalchemy_utils
+  - build-essential
+  - python-dev
+  - python3-dev
+  - python2.7
+  - python3.5
+  - mysql-server
