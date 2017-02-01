@@ -21,7 +21,7 @@ debug: False
 molteniron_package_state: "latest"
 
 molteniron_git_repo: https://git.openstack.org/openstack/molteniron
-molteniron_git_install_branch: stable/newton
+molteniron_git_install_branch: master
 molteniron_developer_mode: false
 molteniron_developer_constraints:
   - "git+{{ molteniron_git_repo }}@{{ molteniron_git_install_branch }}#egg=molteniron"
@@ -32,14 +32,14 @@ molteniron_bin: "/openstack/venvs/molteniron-{{ molteniron_venv_tag }}/bin"
 
 molteniron_venv_download_url: http://127.0.0.1/venvs/untagged/ubuntu/molteniron.tgz
 
-## Swift User / Group
+## Molteniron User / Group
 molteniron_system_user_name: molteniron
 molteniron_system_group_name: molteniron
 molteniron_system_shell: /bin/bash
 molteniron_system_comment: molteniron system user
 molteniron_system_home_folder: "/var/lib/{{ molteniron_system_user_name }}"
 
-## Swift default ports
+## Molteniron default ports
 # You can change the object, container, account ports.
 # This will update the ring, on the next playbook run,
 # without requiring a rebalance.
@@ -47,7 +47,7 @@ molteniron_system_home_folder: "/var/lib/{{ molteniron_system_user_name }}"
 # the service restart and the ring updating.
 molteniron_object_port: "5656"
 
-## Swift service defaults
+## Molteniron service defaults
 molteniron_service_name: molteniron
 
 # Basic molteniron configuration for the cluster
