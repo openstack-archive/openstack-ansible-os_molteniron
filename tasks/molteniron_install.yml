@@ -89,3 +89,14 @@
   when:
     - not molteniron_developer_mode | bool
     - molteniron_get_venv | changed or molteniron_venv_dir | changed
+
+- name: authorize openstack_citest MYSQL access
+  mysql_user:
+    login_user: root
+    login_password: ""
+    check_implicit_admin: yes
+    name: openstack_citest
+    #@TODO(hamzy)
+    password: openstack_citest
+    priv: "*.*:ALL,GRANT"
+    state: present
