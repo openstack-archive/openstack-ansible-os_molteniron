@@ -63,7 +63,7 @@
     - not molteniron_developer_mode | bool
     - molteniron_get_venv | changed or molteniron_venv_dir | changed
   notify:
-    - Restart service
+    - Restart molteniron services
 
 - name: Install pip packages
   pip:
@@ -81,7 +81,7 @@
   delay: 2
   when: molteniron_developer_mode | bool
   notify:
-    - Restart service
+    - Restart molteniron services
 
 - name: Update virtualenv path
   command: >

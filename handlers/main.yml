@@ -27,9 +27,13 @@
 - name: Restart molteniron services
   service:
     name: "{{ item.value.program_name }}"
-    state: "restarted"
+    state: restarted
     pattern: "{{ item.value.program_name }}"
   with_dict: "{{ molteniron_services }}"
+  register: _restart
+  until: _restart|success
+  retries: 5
+  delay: 2
   when:
     - inventory_hostname in groups[item.value.group]
     - "{{ item.value.service_en | default(true) }}"
@@ -38,10 +42,3 @@
   service:
     name: "rsyslog"
     state: "restarted"
-
-- name: Restart rsync service
-  service:
-    name: "rsync"
-    state: "restarted"
-    enabled: "yes"
-    sleep: 2
