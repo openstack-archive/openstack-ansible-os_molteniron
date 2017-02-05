@@ -35,3 +35,10 @@ molteniron_developer_mode_distro_packages:
   - python2.7
   - python3.5
   - mysql-server
+
+moltenirond_pid_file: "/var/run/moltenirond.pid"
+
+molteniron_source_dir: "/home/ubuntu/molteniron"
+
+# molteniron_venv_tag instead?
+molteniron_conf_dir: "/openstack/venvs/molteniron-{{ openstack_release }}/etc/molteniron"
