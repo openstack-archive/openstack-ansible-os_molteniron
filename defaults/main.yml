@@ -57,11 +57,7 @@ molteniron: {}
 # molteniron:
 
 # molteniron packages that must be installed before anything else
-#molteniron_requires_pip_packages:
-
-# Common pip packages
-molteniron_pip_packages:
-  - molteniron
+molteniron_requires_pip_packages:
   - daemonize
   - PyMySQL
   - pyyaml
@@ -69,6 +65,10 @@ molteniron_pip_packages:
   - sqlalchemy_utils
   - virtualenv
   - virtualenv-tools
+
+# Common pip packages
+molteniron_pip_packages:
+  - molteniron
 
 # This variable is used by the repo_build process to determine
 # which host group to check for members of before building the
