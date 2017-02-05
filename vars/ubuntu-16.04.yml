@@ -23,6 +23,7 @@ molteniron_distro_packages:
   - python2.7
   - python3.5
   - mysql-server
+  - python-mysqldb
 
 molteniron_developer_mode_distro_packages:
   - git-core
