@@ -123,3 +123,51 @@
       moltenirond-helper --conf-dir=${CONF_DIR} start
     fi
   when: "{{ install_molteniron }}"
+
+- name: add molteniron nodes
+  shell: |
+    . {{ molteniron_bin }}/activate
+
+    CONF_DIR={{ molteniron_conf_dir }}
+
+    NAME={{ item.name }}
+    IPMI_IP={{ item.ipmi_ip }}
+    IPMI_USER={{ item.ipmi_user }}
+    IPMI_PASSWORD={{ item.ipmi_password }}
+    ALLOCATION_POOL={{ item.allocation_pool }}
+    PORT_HWADDR={{ item.port_hwaddr }}
+    CPU_ARCH={{ item.cpu_arch }}
+    CPUS={{ item.cpus }}
+    RAM_MB={{ item.ram_mb }}
+    DISK_GB={{ item.disk_gb }}
+
+    FOUND=0
+    while read LINE
+    do
+      EXISTING_NAME=$(echo ${LINE} | cut -f2 -d,)
+      if [ "${EXISTING_NAME}" == "${NAME}" ]
+      then
+        FOUND=1
+      fi
+    done < <(molteniron --conf-dir=${CONF_DIR} --output=result status --type csv)
+
+    if [ ${FOUND} -eq 0 ]
+    then
+      molteniron --conf-dir=${CONF_DIR} \
+                 add_baremetal \
+                 ${NAME} \
+                 ${IPMI_IP} \
+                 ${IPMI_USER} \
+                 ${IPMI_PASSWORD} \
+                 ${ALLOCATION_POOL} \
+                 ${PORT_HWADDR} \
+                 ${CPU_ARCH} \
+                 ${CPUS} \
+                 ${RAM_MB} \
+                 ${DISK_GB}
+    fi
+  args:
+    # Note: we need while/do/done < <() redirection support
+    executable: /bin/bash
+  with_items: "{{ molteniron_baremetal_nodes }}"
+
