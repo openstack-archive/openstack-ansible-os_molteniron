@@ -101,33 +101,25 @@
     priv: "*.*:ALL,GRANT"
     state: present
 
-- name: grab the contents of {{ moltenirond_pid_file }}
-  shell: cat {{ moltenirond_pid_file }}
-  ignore_errors: true
-  register: moltenirond_pid
-
-- debug:
-    var: moltenirond_pid
-
-- name: check to see if molteniron is running
-  shell: test -f {{ moltenirond_pid_file }};
-         if [ $? -eq 0 ]; then echo RUNNING; else echo STOPPED; fi
-  register: moltenirond_pid_status
-
-- debug:
-    var: moltenirond_pid_status
-
 - name: start molteniron server
   shell: |
     . {{ molteniron_bin }}/activate
-    moltenirond-helper --conf-dir={{ molteniron_conf_dir }} start
-  when: moltenirond_pid_status.stdout == "STOPPED"
-
-- name: run the molteniron status command
-  shell: |
-    . {{ molteniron_bin }}/activate
-    molteniron --conf-dir={{ molteniron_conf_dir }} --output=result status --type=human
-  register: molteniron_result_status
-
-- debug:
-    var: molteniron_result_status
+    RUNNING=0
+    PID_FILE={{ moltenirond_pid_file }}
+    CONF_DIR={{ molteniron_conf_dir }}
+    if [ -f ${PID_FILE} ]
+    then
+      # If there is a pid file then see if the server responds to a command
+      molteniron --conf-dir=${CONF_DIR} --output=result status --type=human > /dev/null
+      if [ $? -eq 0 ]
+      then
+        RUNNING=1
+      fi
+    fi
+    if [ ${RUNNING} -eq 0 ]
+    then
+      # If there is a pid file, delete it because the helper will try and use it
+      test -f ${PID_FILE} && sudo rm ${PID_FILE}
+      moltenirond-helper --conf-dir=${CONF_DIR} start
+    fi
+  when: "{{ install_molteniron }}"
