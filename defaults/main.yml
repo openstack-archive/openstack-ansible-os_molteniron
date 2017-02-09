@@ -75,7 +75,3 @@ molteniron_pip_packages:
 # pip packages required by this role. The value is picked up
 # by the py_pkgs lookup.
 molteniron_role_project_group: molteniron_all
-
-molteniron_services:
-  molteniron-server:
-    program_name: "molteniron-server"

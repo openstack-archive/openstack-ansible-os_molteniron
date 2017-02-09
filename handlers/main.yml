@@ -15,27 +15,9 @@
 
 - name: Reload systemd daemon
   command: "systemctl daemon-reload"
-  notify:
-    - Restart molteniron services
 
 - name: Reload upstart init scripts
   command: initctl reload-configuration
-  notify:
-    - Restart molteniron services
-
-- name: Restart molteniron services
-  service:
-    name: "{{ item.value.program_name }}"
-    state: restarted
-    pattern: "{{ item.value.program_name }}"
-  with_dict: "{{ molteniron_services }}"
-  register: _restart
-  until: _restart|success
-  retries: 5
-  delay: 2
-  when:
-    - inventory_hostname in groups[item.value.group]
-    - "{{ item.value.service_en | default(true) }}"
 
 - name: Restart rsyslog
   service:
