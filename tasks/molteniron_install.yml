@@ -170,4 +170,4 @@
     # Note: we need while/do/done < <() redirection support
     executable: /bin/bash
   with_items: "{{ molteniron_baremetal_nodes }}"
-
+  when: "{{ install_molteniron }}"
