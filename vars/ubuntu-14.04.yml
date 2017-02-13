@@ -23,6 +23,7 @@ molteniron_distro_packages:
   - python2.7
   - python3.4
   - mysql-server
+  - python-mysqldb
 
 moltenirond_pid_file: "/var/run/moltenirond.pid"
 
