@@ -102,11 +102,10 @@
     . {{ molteniron_bin }}/activate
     RUNNING=0
     PID_FILE={{ moltenirond_pid_file }}
-    CONF_DIR={{ molteniron_conf_dir }}
     if [ -f ${PID_FILE} ]
     then
       # If there is a pid file then see if the server responds to a command
-      molteniron --conf-dir=${CONF_DIR} --output=result status --type=human > /dev/null
+      molteniron --output=result status --type=human > /dev/null
       if [ $? -eq 0 ]
       then
         RUNNING=1
@@ -116,15 +115,13 @@
     then
       # If there is a pid file, delete it because the helper will try and use it
       test -f ${PID_FILE} && sudo rm ${PID_FILE}
-      moltenirond-helper --conf-dir=${CONF_DIR} start
+      moltenirond-helper start
     fi
   when: "{{ install_molteniron }}"
 
 - name: add molteniron nodes
   shell: |
     . {{ molteniron_bin }}/activate
-
-    CONF_DIR={{ molteniron_conf_dir }}
 
     NAME={{ item.name }}
     IPMI_IP={{ item.ipmi_ip }}
@@ -145,12 +142,11 @@
       then
         FOUND=1
       fi
-    done < <(molteniron --conf-dir=${CONF_DIR} --output=result status --type csv)
+    done < <(molteniron --output=result status --type csv)
 
     if [ ${FOUND} -eq 0 ]
     then
-      molteniron --conf-dir=${CONF_DIR} \
-                 add_baremetal \
+      molteniron add_baremetal \
                  ${NAME} \
                  ${IPMI_IP} \
                  ${IPMI_USER} \

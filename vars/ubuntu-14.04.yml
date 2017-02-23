@@ -29,9 +29,6 @@ moltenirond_pid_file: "/var/run/moltenirond.pid"
 
 molteniron_source_dir: "/home/ubuntu/molteniron"
 
-# molteniron_venv_tag instead?
-molteniron_conf_dir: "/openstack/venvs/molteniron-{{ openstack_release }}/etc/molteniron"
-
 # Hack to get past the following:
 # ANSIBLE0012 checks for usage of shell or command without when, changed_when, ...
 install_molteniron: true
