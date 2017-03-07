@@ -86,14 +86,22 @@
     - not molteniron_developer_mode | bool
     - molteniron_get_venv | changed or molteniron_venv_dir | changed
 
+- name: Modify molteniron configuration yaml
+  shell: |
+    . {{ molteniron_bin }}/activate
+
+    CONF=$(python -c 'from pkg_resources import resource_filename; print resource_filename("molteniron", "conf.yaml");')
+
+    sudo sed -r -i -e 's/^(sqlPass:).*$/\1 "{{ molteniron_container_mysql_password }}"/' ${CONF}
+  when: "{{ install_molteniron }}"
+
 - name: authorize openstack_citest MYSQL access
   mysql_user:
     login_user: root
-    login_password: ""
+    login_password: "{{ molteniron_container_mysql_password }}"
     check_implicit_admin: yes
     name: openstack_citest
-    #@TODO(hamzy)
-    password: openstack_citest
+    password: "{{ molteniron_container_mysql_password }}"
     priv: "*.*:ALL,GRANT"
     state: present
 
