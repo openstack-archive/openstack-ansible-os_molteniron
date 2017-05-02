@@ -25,9 +25,17 @@
   tags:
     - always
 
+- include: molteniron_pre_install.yml
+  tags:
+    - molteniron-install
+
 - include: molteniron_install.yml
+  tags:
+    - molteniron-install
+
+- include: molteniron_post_install.yml
   when:
     - molteniron_baremetal_nodes is defined
     - molteniron_baremetal_nodes | length > 0
   tags:
-    - molteniron-install
+    - molteniron-config

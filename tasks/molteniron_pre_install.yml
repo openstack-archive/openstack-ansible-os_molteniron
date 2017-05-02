@@ -13,7 +13,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Create molteniron dir
+- name: Create the system group
+  group:
+    name: "{{ molteniron_system_group_name }}"
+    state: "present"
+    system: "yes"
+
+- name: Create the system user
+  user:
+    name: "{{ molteniron_system_user_name }}"
+    group: "{{ molteniron_system_group_name }}"
+    comment: "{{ molteniron_system_comment }}"
+    shell: "{{ molteniron_system_shell }}"
+    system: "yes"
+    createhome: "yes"
+    home: "{{ molteniron_system_user_home }}"
+
+- name: Create required dirs
   file:
     path: "{{ item.path }}"
     state: directory
@@ -21,26 +37,10 @@
     group: "{{ item.group|default(molteniron_system_group_name) }}"
     mode: "{{ item.mode|default('0755') }}"
   with_items:
-    - { path: "/var/lock/molteniron", mode: "2755" }
-
-- name: Install yum packages
-  yum:
-    pkg: "{{ item }}"
-    state: "{{ molteniron_package_state }}"
-  register: install_packages
-  until: install_packages|success
-  retries: 5
-  delay: 2
-  with_items: "{{ molteniron_distro_packages }}"
-
-- name: Install developer mode yum packages
-  yum:
-    pkg: "{{ item }}"
-    state: "{{ molteniron_package_state }}"
-  register: install_packages
-  until: install_packages|success
-  retries: 5
-  delay: 2
-  with_items: "{{ molteniron_developer_mode_distro_packages }}"
-  when:
-    - molteniron_developer_mode | bool
+    - path: "/openstack/venvs"
+      mode: "0755"
+      owner: "root"
+      group: "root"
+    - path: "{{ molteniron_system_user_home }}"
+    - path: "/var/lock/molteniron"
+      mode: "2755"

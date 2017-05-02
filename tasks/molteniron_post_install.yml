@@ -1,0 +1,100 @@
+---
+# Copyright (c) 2017 IBM Corporation.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+- name: Modify molteniron configuration yaml
+  shell: |
+    . {{ molteniron_bin }}/activate
+
+    CONF=$(python -c 'from pkg_resources import resource_filename; print resource_filename("molteniron", "conf.yaml");')
+
+    sudo sed -r -i -e 's/^(sqlPass:).*$/\1 "{{ molteniron_container_mysql_password }}"/' ${CONF}
+  changed_when: true
+
+- name: authorize openstack_citest MYSQL access
+  mysql_user:
+    login_user: root
+    login_password: "{{ molteniron_container_mysql_password }}"
+    check_implicit_admin: yes
+    name: openstack_citest
+    password: "{{ molteniron_container_mysql_password }}"
+    priv: "*.*:ALL,GRANT"
+    state: present
+
+- name: start molteniron server
+  shell: |
+    . {{ molteniron_bin }}/activate
+    RUNNING=0
+    PID_FILE={{ moltenirond_pid_file }}
+    if [ -f ${PID_FILE} ]
+    then
+      # If there is a pid file then see if the server responds to a command
+      molteniron --output=result status --type=human > /dev/null
+      if [ $? -eq 0 ]
+      then
+        RUNNING=1
+      fi
+    fi
+    if [ ${RUNNING} -eq 0 ]
+    then
+      # If there is a pid file, delete it because the helper will try and use it
+      test -f ${PID_FILE} && sudo rm ${PID_FILE}
+      moltenirond-helper start
+    fi
+  changed_when: true
+
+- name: add molteniron nodes
+  shell: |
+    . {{ molteniron_bin }}/activate
+
+    NAME={{ item.name }}
+    IPMI_IP={{ item.ipmi_ip }}
+    IPMI_USER={{ item.ipmi_user }}
+    IPMI_PASSWORD={{ item.ipmi_password }}
+    ALLOCATION_POOL={{ item.allocation_pool }}
+    PORT_HWADDR={{ item.port_hwaddr }}
+    CPU_ARCH={{ item.cpu_arch }}
+    CPUS={{ item.cpus }}
+    RAM_MB={{ item.ram_mb }}
+    DISK_GB={{ item.disk_gb }}
+
+    FOUND=0
+    while read LINE
+    do
+      EXISTING_NAME=$(echo ${LINE} | cut -f2 -d,)
+      if [ "${EXISTING_NAME}" == "${NAME}" ]
+      then
+        FOUND=1
+      fi
+    done < <(molteniron --output=result status --type csv)
+
+    if [ ${FOUND} -eq 0 ]
+    then
+      molteniron add_baremetal \
+                 ${NAME} \
+                 ${IPMI_IP} \
+                 ${IPMI_USER} \
+                 ${IPMI_PASSWORD} \
+                 ${ALLOCATION_POOL} \
+                 ${PORT_HWADDR} \
+                 ${CPU_ARCH} \
+                 ${CPUS} \
+                 ${RAM_MB} \
+                 ${DISK_GB}
+    fi
+  args:
+    # Note: we need while/do/done < <() redirection support
+    executable: /bin/bash
+  with_items: "{{ molteniron_baremetal_nodes }}"
+  changed_when: true
