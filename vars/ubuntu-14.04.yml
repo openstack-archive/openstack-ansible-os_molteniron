@@ -28,7 +28,3 @@ molteniron_distro_packages:
 moltenirond_pid_file: "/var/run/moltenirond.pid"
 
 molteniron_source_dir: "/home/ubuntu/molteniron"
-
-# Hack to get past the following:
-# ANSIBLE0012 checks for usage of shell or command without when, changed_when, ...
-install_molteniron: true
