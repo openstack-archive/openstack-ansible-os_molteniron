@@ -108,3 +108,10 @@
   when:
     - not molteniron_developer_mode | bool
     - molteniron_get_venv | changed or molteniron_venv_dir | changed
+
+- name: Record the venv tag deployed
+  ini_file:
+    dest: "/etc/ansible/facts.d/openstack_ansible.fact"
+    section: molteniron
+    option: venv_tag
+    value: "{{ molteniron_venv_tag }}"
