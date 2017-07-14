@@ -14,7 +14,7 @@ OpenStack-Ansible MoltenIron
 Ansible role to deploy the Ironic sub-project MoltenIron
 
 Documentation for the project can be found at:
-  http://docs.openstack.org/developer/openstack-ansible-os_molteniron/
+  https://docs.openstack.org/openstack-ansible-os_molteniron/latest/
 
 The project home is at:
   http://launchpad.net/openstack-ansible
