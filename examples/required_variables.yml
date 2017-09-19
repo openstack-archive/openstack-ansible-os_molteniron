@@ -1,3 +1,4 @@
+---
 # To install molteniron nodes, please add the following set of information:
 # There can be more than one bare metal node.
 molteniron_baremetal_nodes:
