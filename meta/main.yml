@@ -36,3 +36,6 @@ dependencies:
     when:
       - ansible_pkg_mgr == 'apt'
   - openstack_openrc
+openstack_ansible_info:
+  maturity: incubated
+  created_during: pike
