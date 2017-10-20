@@ -1,0 +1,10 @@
+Code-Review+2: Jesse Pretorius (odyssey4me) <jesse.pretorius@rackspace.co.uk>
+Verified-1: Jenkins
+Code-Review+2: Markos Chandras (hwoarang) <mchandras@suse.de>
+Workflow+1: Markos Chandras (hwoarang) <mchandras@suse.de>
+Verified+2: Zuul
+Submitted-by: Zuul
+Submitted-at: Fri, 20 Oct 2017 18:31:39 +0000
+Reviewed-on: https://review.openstack.org/511449
+Project: openstack/openstack-ansible-os_molteniron
+Branch: refs/heads/master
