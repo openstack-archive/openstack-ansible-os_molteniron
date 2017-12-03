@@ -14,8 +14,10 @@ Default variables
    :language: yaml
    :start-after: under the License.
 
-Required variables
-~~~~~~~~~~~~~~~~~~
+Dependencies
+~~~~~~~~~~~~
+
+This role needs pip >= 7.1 installed on the target host.
 
 To install molteniron nodes, please add the following set of information:
 There can be more than one bare metal node.
