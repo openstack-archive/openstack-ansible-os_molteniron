@@ -64,7 +64,6 @@ molteniron_requires_pip_packages:
   - sqlalchemy
   - sqlalchemy_utils
   - virtualenv
-  - virtualenv-tools
 
 # Common pip packages
 molteniron_pip_packages:
