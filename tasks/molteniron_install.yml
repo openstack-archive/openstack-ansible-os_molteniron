@@ -107,6 +107,7 @@
   shell: |
     find {{ molteniron_bin }} -name \*.pyc -delete
     sed -si '1s/^.*python.*$/#!{{ molteniron_bin | replace ('/','\/') }}\/python/' {{ molteniron_bin }}/*
+    virtualenv {{ molteniron_bin | dirname }}
   when:
     - not molteniron_developer_mode | bool
     - molteniron_get_venv | changed
