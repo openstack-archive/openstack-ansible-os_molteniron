@@ -37,86 +37,24 @@
   when:
     - molteniron_developer_mode | bool
 
-- name: Install required pip packages
-  pip:
-    name: "{{ molteniron_requires_pip_packages | join(' ') }}"
-    state: "{{ molteniron_package_state }}"
-    extra_args: >-
+- name: Build/install the python venv
+  include_role:
+    name: "python_venv_build"
+    private: yes
+  vars:
+    distro_package_list: "{{ molteniron_distro_packages }}"
+    host_pip_packages: "{{ molteniron_requires_pip_packages }}"
+    venv_pip_packages: "{{ molteniron_pip_packages }}"
+    host_pip_install_args: >-
       {{ molteniron_developer_mode | ternary(pip_install_developer_constraints | default('--constraint /opt/developer-pip-constraints.txt'), '') }}
       {{ (pip_install_upper_constraints is defined) | ternary('--constraint ' + pip_install_upper_constraints | default(''),'') }}
       {{ pip_install_options | default('') }}
-  register: install_packages
-  until: install_packages|success
-  retries: 5
-  delay: 2
-
-- name: Retrieve checksum for venv download
-  uri:
-    url: "{{ molteniron_venv_download_url | replace('tgz', 'checksum') }}"
-    return_content: yes
-  register: molteniron_venv_checksum
-  when: not molteniron_developer_mode | bool
-
-- name: Attempt venv download
-  get_url:
-    url: "{{ molteniron_venv_download_url }}"
-    dest: "/var/cache/{{ molteniron_venv_download_url | basename }}"
-    checksum: "sha1:{{ molteniron_venv_checksum.content | trim }}"
-  register: molteniron_get_venv
-  when: not molteniron_developer_mode | bool
-
-- name: Remove existing venv
-  file:
-    path: "{{ molteniron_bin | dirname }}"
-    state: absent
-  when: molteniron_get_venv | changed
-
-- name: Create molteniron venv dir
-  file:
-    path: "{{ molteniron_bin | dirname }}"
-    state: directory
-  register: molteniron_venv_dir
-  when: not molteniron_developer_mode | bool
-
-- name: Unarchive pre-built venv
-  unarchive:
-    src: "/var/cache/{{ molteniron_venv_download_url | basename }}"
-    dest: "{{ molteniron_bin | dirname }}"
-    copy: "no"
-  when:
-    - not molteniron_developer_mode | bool
-    - molteniron_get_venv | changed or molteniron_venv_dir | changed
-
-- name: Install pip packages
-  pip:
-    name: "{{ molteniron_pip_packages | join(' ') }}"
-    state: "{{ molteniron_package_state }}"
-    virtualenv: "{{ molteniron_bin | dirname }}"
-    virtualenv_site_packages: "no"
-    extra_args: >-
+    venv_pip_install_args: >-
       {{ molteniron_developer_mode | ternary(pip_install_developer_constraints | default('--constraint /opt/developer-pip-constraints.txt'), '') }}
       {{ (pip_install_upper_constraints is defined) | ternary('--constraint ' + pip_install_upper_constraints | default(''),'') }}
       {{ pip_install_options | default('') }}
-  register: install_packages
-  until: install_packages|success
-  retries: 5
-  delay: 2
-  when: molteniron_developer_mode | bool
-
-- name: Update virtualenv path
-  shell: |
-    find {{ molteniron_bin }} -name \*.pyc -delete
-    sed -si '1s/^.*python.*$/#!{{ molteniron_bin | replace ('/','\/') }}\/python/' {{ molteniron_bin }}/*
-    virtualenv {{ molteniron_bin | dirname }}
-  when:
-    - not molteniron_developer_mode | bool
-    - molteniron_get_venv | changed
-  tags:
-    - skip_ansible_lint
-
-- name: Record the venv tag deployed
-  ini_file:
-    dest: "/etc/ansible/facts.d/openstack_ansible.fact"
-    section: molteniron
-    option: venv_tag
-    value: "{{ molteniron_venv_tag }}"
+    venv_destination_path: "{{ molteniron_bin | dirname }}"
+    venv_facts_when_changed:
+      - section: "molteniron"
+        option: "venv_tag"
+        value: "{{ molteniron_venv_tag }}"
