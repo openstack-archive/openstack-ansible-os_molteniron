@@ -25,7 +25,7 @@ molteniron_distro_packages:
   - mysql-server
   - python-mysqldb
 
-molteniron_developer_mode_distro_packages:
+molteniron_devel_distro_packages:
   - git-core
   - python-dev
   - python3-dev
