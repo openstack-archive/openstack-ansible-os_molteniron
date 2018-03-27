@@ -26,8 +26,19 @@ molteniron_developer_mode: false
 molteniron_developer_constraints:
   - "git+{{ molteniron_git_repo }}@{{ molteniron_git_install_branch }}#egg=molteniron"
 
+# TODO(odyssey4me):
+# This can be simplified once all the roles are using
+# python_venv_build. We can then switch to using a
+# set of constraints in pip.conf inside the venv,
+# perhaps prepared by giving a giving a list of
+# constraints to the role.
+molteniron_pip_install_args: >-
+  {{ molteniron_developer_mode | ternary(pip_install_developer_constraints | default('--constraint /opt/developer-pip-constraints.txt'), '') }}
+  {{ (pip_install_upper_constraints is defined) | ternary('--constraint ' + pip_install_upper_constraints | default(''), '') }}
+  {{ pip_install_options | default('') }}
+
 # Name of the virtual env to deploy into
-molteniron_venv_tag: untagged
+molteniron_venv_tag: "{{ venv_tag | default('untagged') }}"
 molteniron_bin: "/openstack/venvs/molteniron-{{ molteniron_venv_tag }}/bin"
 
 molteniron_venv_download_url: http://127.0.0.1/venvs/untagged/ubuntu/molteniron.tgz
