@@ -31,6 +31,7 @@
     password: "{{ molteniron_container_mysql_password }}"
     priv: "*.*:ALL,GRANT"
     state: present
+  no_log: true
 
 - name: start molteniron server
   shell: |
@@ -98,3 +99,4 @@
     executable: /bin/bash
   with_items: "{{ molteniron_baremetal_nodes }}"
   changed_when: true
+  no_log: true
