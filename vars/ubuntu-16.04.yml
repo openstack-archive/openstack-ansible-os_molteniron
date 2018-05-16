@@ -19,21 +19,16 @@ cache_timeout: 600
 molteniron_distro_packages:
   - build-essential
   - python-dev
-  - python3-dev
   - python2.7
-  - python3.5
   - mysql-server
   - python-mysqldb
 
 molteniron_developer_mode_distro_packages:
   - git-core
   - python-dev
-  - python3-dev
   - build-essential
   - python-dev
-  - python3-dev
   - python2.7
-  - python3.5
   - mysql-server
 
 moltenirond_pid_file: "/var/run/moltenirond.pid"
