@@ -59,6 +59,8 @@ molteniron: {}
 # molteniron packages that must be installed before anything else
 molteniron_requires_pip_packages:
   - daemonize
+  - elasticsearch
+  - osprofiler
   - PyMySQL
   - pyyaml
   - sqlalchemy
