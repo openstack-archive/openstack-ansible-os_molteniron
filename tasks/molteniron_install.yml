@@ -20,7 +20,7 @@
     update_cache: "{{ (ansible_pkg_mgr == 'apt') | ternary('yes', omit) }}"
     cache_valid_time: "{{ (ansible_pkg_mgr == 'apt') | ternary(cache_timeout, omit) }}"
   register: install_packages
-  until: install_packages|success
+  until: install_packages is success
   retries: 5
   delay: 2
 
@@ -31,7 +31,7 @@
     update_cache: "{{ (ansible_pkg_mgr == 'apt') | ternary('yes', omit) }}"
     cache_valid_time: "{{ (ansible_pkg_mgr == 'apt') | ternary(cache_timeout, omit) }}"
   register: install_packages
-  until: install_packages|success
+  until: install_packages is success
   retries: 5
   delay: 2
   when:
@@ -46,7 +46,7 @@
       {{ (pip_install_upper_constraints is defined) | ternary('--constraint ' + pip_install_upper_constraints | default(''),'') }}
       {{ pip_install_options | default('') }}
   register: install_packages
-  until: install_packages|success
+  until: install_packages is success
   retries: 5
   delay: 2
 
@@ -69,7 +69,7 @@
   file:
     path: "{{ molteniron_bin | dirname }}"
     state: absent
-  when: molteniron_get_venv | changed
+  when: molteniron_get_venv  is changed
 
 - name: Create molteniron venv dir
   file:
@@ -85,7 +85,7 @@
     copy: "no"
   when:
     - not molteniron_developer_mode | bool
-    - molteniron_get_venv | changed or molteniron_venv_dir | changed
+    - molteniron_get_venv | changed or molteniron_venv_dir  is changed
 
 - name: Install pip packages
   pip:
@@ -98,7 +98,7 @@
       {{ (pip_install_upper_constraints is defined) | ternary('--constraint ' + pip_install_upper_constraints | default(''),'') }}
       {{ pip_install_options | default('') }}
   register: install_packages
-  until: install_packages|success
+  until: install_packages is success
   retries: 5
   delay: 2
   when: molteniron_developer_mode | bool
@@ -121,7 +121,7 @@
         --no-wheel
   when:
     - not molteniron_developer_mode | bool
-    - molteniron_get_venv | changed
+    - molteniron_get_venv  is changed
   tags:
     - skip_ansible_lint
 
