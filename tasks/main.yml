@@ -39,3 +39,22 @@
     - molteniron_baremetal_nodes | length > 0
   tags:
     - molteniron-config
+  when:
+- include_tasks: mq_setup.yml
+    - "molteniron_services['molteniron-api']['group'] in group_names"
+    - "inventory_hostname == ((groups[molteniron_services['molteniron-api']['group']]| intersect(ansible_play_hosts)) | list)[0]"
+  with_items:
+    - oslomsg_setup_host: "{{ molteniron_oslomsg_rpc_setup_host }}"
+      oslomsg_userid: "{{ molteniron_oslomsg_rpc_userid }}"
+      oslomsg_password: "{{ molteniron_oslomsg_rpc_password }}"
+      oslomsg_vhost: "{{ molteniron_oslomsg_rpc_vhost }}"
+      oslomsg_transport: "{{ molteniron_oslomsg_rpc_transport }}"
+    - oslomsg_setup_host: "{{ molteniron_oslomsg_notify_setup_host }}"
+      oslomsg_userid: "{{ molteniron_oslomsg_notify_userid }}"
+      oslomsg_password: "{{ molteniron_oslomsg_notify_password }}"
+      oslomsg_vhost: "{{ molteniron_oslomsg_notify_vhost }}"
+      oslomsg_transport: "{{ molteniron_oslomsg_notify_transport }}"
+  tags:
+    - molteniron-config
+
+  no_log: true

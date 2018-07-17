@@ -75,3 +75,7 @@ molteniron_pip_packages:
 # pip packages required by this role. The value is picked up
 # by the py_pkgs lookup.
 molteniron_role_project_group: molteniron_all
+molteniron_oslomsg_rpc_host_group: "{{ oslomsg_rpc_host_group | default('rabbitmq_all') }}"
+molteniron_oslomsg_notify_host_group: "{{ oslomsg_notify_host_group | default('rabbitmq_all') }}"
+molteniron_oslomsg_rpc_setup_host: "{{ (molteniron_oslomsg_rpc_host_group in groups) | ternary(groups[molteniron_oslomsg_rpc_host_group][0], 'localhost') }}"
+molteniron_oslomsg_notify_setup_host: "{{ (molteniron_oslomsg_notify_host_group in groups) | ternary(groups[molteniron_oslomsg_notify_host_group][0], 'localhost') }}"
