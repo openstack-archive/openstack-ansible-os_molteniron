@@ -1,0 +1,9 @@
+Code-Review+1: wanghui <wang_hui@inspur.com>
+Code-Review+2: Kevin Carter (cloudnull) <kevin@cloudnull.com>
+Workflow+1: Kevin Carter (cloudnull) <kevin@cloudnull.com>
+Verified+2: Zuul
+Submitted-by: Zuul
+Submitted-at: Thu, 27 Sep 2018 03:25:14 +0000
+Reviewed-on: https://review.openstack.org/600619
+Project: openstack/openstack-ansible-os_molteniron
+Branch: refs/heads/master
